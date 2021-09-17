@@ -3,7 +3,6 @@
     <img class="icon-img" src="@/assets/img/chatPage/voice.png" alt="输入切换">
     <div class="input-area-container">
       <textarea
-        ref="textRel"
         class="input"
         type="text"
         v-model="inputContent"
@@ -23,7 +22,6 @@ import { ref, watch } from 'vue';
 export default {
   name: 'InputArea',
   setup(): unknown {
-    const textRel = ref(null);
     const inputContent = ref('');
     const isShowAdd = ref(true);
 
@@ -35,7 +33,6 @@ export default {
       }
     });
     return {
-      textRel,
       inputContent,
       isShowAdd
     };
@@ -47,13 +44,13 @@ export default {
 .input-container {
   display: flex;
   align-items: flex-end;
-  position: fixed;
-  bottom: 0;
   box-sizing: border-box;
   width: 100%;
   border-top: 1px solid rgba(235,235,235,1);
   padding: @rpx * 20vw @rpx * 14vw;
   background-color: rgba(244,244,244,.1);
+  font-size: @rpx * 30vw;
+  line-height: 1.3;
   .input-area-container {
     flex: 1 0 0;
     align-self: stretch;
@@ -68,7 +65,9 @@ export default {
       overflow-y:hidden;
     }
     .input-place-holder {
+      box-sizing: border-box;
       width: 100%;
+      border: 1px solid black;
       opacity: 0;
       word-wrap:break-word;
     }

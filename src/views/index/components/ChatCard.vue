@@ -54,6 +54,12 @@ export default defineComponent({
   methods: {
     clickCard(): void {
       this.$router.push({
+        path: '/chatPage',
+        query: {
+          userHeadImg: this.userInfo.userHeadImg,
+          userNickName: this.userInfo.userNickName,
+          userId: this.userInfo.userId
+        }
       });
     }
   }

@@ -1,3 +1,11 @@
+<!--
+ * @Author: Aucheo
+ * @Date: 2021-09-06 16:48:42
+ * @LastEditTime: 2021-09-16 14:51:25
+ * @LastEditors: Aucheo
+ * @Description:
+ * @FilePath: \instance-conmunication\src\views\index\Index.vue
+-->
 <template>
   <navigator>
     <template v-slot:left>
@@ -26,6 +34,8 @@
 </template>
 
 <script lang="ts">
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import navigator from '@/components/Navigator.vue';
 import chatCard from './components/ChatCard.vue';
 
@@ -34,6 +44,15 @@ export default {
   components: {
     navigator,
     chatCard
+  },
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    if (store.state.userId === '') {
+      router.replace({
+        path: '/signIn'
+      });
+    }
   }
 };
 </script>

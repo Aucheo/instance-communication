@@ -1,13 +1,14 @@
 /*
  * @Author: Aucheo
  * @Date: 2021-09-15 19:16:54
- * @LastEditTime: 2021-09-17 15:52:55
+ * @LastEditTime: 2021-09-19 18:03:52
  * @LastEditors: Aucheo
  * @Description:
  * @FilePath: \instance-conmunication\server\router\router.js
  */
 const express = require('express');
 const mongoose = require('mongoose');
+const sha256 = require('sha256');
 
 mongoose.connect('mongodb://localhost/instance-communication');
 const { Schema } = mongoose;
@@ -29,12 +30,11 @@ const User = mongoose.model('User', UserSchema);
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.send('ok');
-});
 // 校验用户名是否重复
 router.get('/signUp/checkUserName', (req, res, next) => {
-  User.findOne({ userName: req.query.userName }, (err, data) => {
+  User.findOne({
+    userName: sha256(req.query.userName)
+  }, (err, data) => {
     if (err) {
       next(err);
     } else {
@@ -44,8 +44,9 @@ router.get('/signUp/checkUserName', (req, res, next) => {
 });
 // 校验邮箱是否重复
 router.get('/signUp/checkUserMail', (req, res, next) => {
-  console.log(req.query.userMail);
-  User.findOne({ userMail: req.query.userMail }, (err, data) => {
+  User.findOne({
+    userMail: sha256(req.query.userMail)
+  }, (err, data) => {
     if (err) {
       next(err);
     } else {
@@ -55,15 +56,15 @@ router.get('/signUp/checkUserMail', (req, res, next) => {
 });
 router.post('/signUp', (req, res) => {
   const newUser = new User({
-    userName: req.body.params.userName,
-    userMail: req.body.params.userMail,
-    userPassword: req.body.params.userPassword
+    userName: sha256(req.body.params.userName),
+    userMail: sha256(req.body.params.userMail),
+    userPassword: sha256(req.body.params.userPassword)
   });
-  console.log(req.body.params);
   newUser.save((err, data, next) => {
     if (err) {
       next(err);
     } else {
+      req.session.user = data;
       res.send(JSON.stringify({
         res: true,
         userId: data['_id']
@@ -71,8 +72,35 @@ router.post('/signUp', (req, res) => {
     }
   });
 });
-router.use((err, req, res) => {
-  res.status(500).send('服务器出错');
+router.post('/signIn', (req, res) => {
+  User.findOne({
+    userName: sha256(req.body.params.userName),
+    userPassword: sha256(req.body.params.userPassword)
+  }, (err, data, next) => {
+    if (err) {
+      next(err);
+    } else {
+      req.session.user = data;
+      res.send(JSON.stringify({
+        res: !!data,
+        userId: data ? data['_id'] : ''
+      }));
+    }
+  });
+});
+router.get('/checkSession', (req, res) => {
+  if (req.session.user) {
+    res.json({ userId: req.session.user['_id'] });
+  } else {
+    res.send();
+  }
+});
+router.get('/', (req, res) => {
+  res.send('ok');
+});
+router.use((err, req, res, next) => {
+  console.log('Server running error!');
+  res.status(500).send();
 });
 
 module.exports = router;

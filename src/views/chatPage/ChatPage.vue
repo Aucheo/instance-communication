@@ -1,7 +1,7 @@
 <!--
  * @Author: Aucheo
  * @Date: 2021-09-10 15:24:49
- * @LastEditTime: 2021-09-12 16:55:51
+ * @LastEditTime: 2021-09-18 17:11:36
  * @LastEditors: Aucheo
  * @Description:
  * @FilePath: \instance-conmunication\src\views\chatPage\ChatPage.vue
@@ -38,11 +38,14 @@ export default {
     InputArea
   },
   setup() {
+    // 输入内容
     const inputRef = ref(null);
     library.add(faChevronLeft);
+    // 导航栏样式
     const navigatorStyle = reactive({
       backgroundColor: 'rgba(244,244,244,1)'
     });
+    // 路由
     const router = useRouter();
     const route = useRoute();
     function goBack() {

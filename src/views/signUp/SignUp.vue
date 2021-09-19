@@ -1,88 +1,104 @@
 <!--
  * @Author: Aucheo
  * @Date: 2021-09-16 12:59:42
- * @LastEditTime: 2021-09-17 16:16:00
+ * @LastEditTime: 2021-09-19 18:19:03
  * @LastEditors: Aucheo
  * @Description:
  * @FilePath: \instance-conmunication\src\views\signUp\signUp.vue
 -->
 <template>
-  <navigator>
+  <navigator :style="navigatorStyle">
     <template v-slot:left>
-      <font-awesome-icon class="font-icon" icon="chevron-left" @click="goBack"/>
+      <font-awesome-icon
+        class="font-icon"
+        icon="chevron-left"
+        @click="goBack"
+      />
     </template>
     <template v-slot:right>
-      <font-awesome-icon class="font-icon" icon="times" @click="goBack"/>
+      <font-awesome-icon class="font-icon" icon="times" @click="goBack" />
     </template>
   </navigator>
   <div class="content-container">
-      <div class="logo-container">
-        <img class="logo" src="@/assets/img/index/title.png" alt="">
+    <div class="logo-container">
+      <img class="logo" src="@/assets/img/index/title.png" alt="" />
+    </div>
+    <div class="welcome-sign-up">注册</div>
+    <div class="sign-up-container">
+      <div class="sign-up-input-container">
+        <input
+          class="sign-up-input"
+          placeholder="请取个名字"
+          type="text"
+          v-model="userName"
+          @input="checkUserNameExistence"
+        />
+        <div class="input-control" v-if="isShowUserNameTip">
+          <font-awesome-icon
+            v-if="isNewUserName"
+            class="allow-icon"
+            icon="check-circle"
+          />
+          <span v-else class="existencen-info">名字已存在</span>
+        </div>
       </div>
-      <div class="welcome-sign-up">注册</div>
-      <div class="sign-up-container">
-        <div class="sign-up-input-container">
-          <input
-            class="sign-up-input"
-            placeholder="请取个名字"
-            type="text"
-            v-model="userName"
-            @input="checkUserNameExistence"
-          >
-          <div class="input-control" v-if="isShowUserNameTip">
-            <font-awesome-icon v-if="isNewUserName" class="allow-icon" icon="check-circle"/>
-            <span v-else class="existencen-info">名字已存在</span>
-          </div>
+      <div class="sign-up-input-container">
+        <input
+          class="sign-up-input"
+          placeholder="请输入邮箱"
+          type="text"
+          v-model="userMail"
+          @input="checkUserMailExistence"
+        />
+        <div class="input-control" v-if="isShowUserMailTip">
+          <font-awesome-icon
+            v-if="isNewUserMail"
+            class="allow-icon"
+            icon="check-circle"
+          />
+          <span v-else class="existencen-info">邮箱已注册</span>
         </div>
-        <div class="sign-up-input-container">
-          <input
-            class="sign-up-input"
-            placeholder="请输入邮箱"
-            type="text"
-            v-model="userMail"
-            @input="checkUserMailExistence"
-          >
-          <div class="input-control" v-if="isShowUserMailTip">
-            <font-awesome-icon v-if="isNewUserMail" class="allow-icon" icon="check-circle"/>
-            <span v-else class="existencen-info">邮箱已注册</span>
-          </div>
-        </div>
-        <div class="sign-up-input-container">
-          <input
-            class="sign-up-input"
-            placeholder="这里输入密码"
-            :type="passwordType"
-            v-model="userPassword"
-            @input="checkUserPasswordValidity"
-          >
-          <div class="input-control">
-            <span v-if="isShowUserPasswordTip">
-              <font-awesome-icon v-if="isValidPassword" class="allow-icon" icon="check-circle"/>
-              <span v-else class="existencen-info">密码格式错误</span>
-            </span>
-            <span @click="changePasswordType">
-              <font-awesome-icon v-if="isShowPassword" icon="eye"/>
-              <font-awesome-icon v-else icon="eye-slash"/>
-            </span>
-            <span class="password-format-tip">
-              <ul>
-                <li>
-                  长度为6-12个字符
-                </li>
-                <li>
-                  必须包含数字以及字母
-                </li>
-              </ul>
-              <font-awesome-icon icon="info-circle"/>
-            </span>
-          </div>
-        </div>
-        <button
-          :class="['sign-up-button', isButtonDisabled ? '' : 'sign-up-button-active']"
-          @click="signUpClick">
-          <span>注册</span>
-        </button>
       </div>
+      <div class="sign-up-input-container">
+        <input
+          class="sign-up-input"
+          placeholder="这里输入密码"
+          :type="passwordType"
+          v-model="userPassword"
+          @input="checkUserPasswordValidity"
+        />
+        <div class="input-control">
+          <span v-if="isShowUserPasswordTip">
+            <font-awesome-icon
+              v-if="isValidPassword"
+              class="allow-icon"
+              icon="check-circle"
+            />
+            <span v-else class="existencen-info">密码格式错误</span>
+          </span>
+          <span @click="changePasswordType">
+            <font-awesome-icon v-if="isShowPassword" icon="eye" />
+            <font-awesome-icon v-else icon="eye-slash" />
+          </span>
+          <span class="password-format-tip">
+            <ul>
+              <li>长度为6-12个字符</li>
+              <li>必须包含数字以及字母</li>
+            </ul>
+            <font-awesome-icon icon="info-circle" />
+          </span>
+        </div>
+      </div>
+      <button
+        :class="[
+          'sign-up-button',
+          isButtonDisabled ? '' : 'sign-up-button-active'
+        ]"
+        @click="signUpClick"
+      >
+        <span>注册</span>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -98,10 +114,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { useRouter } from 'vue-router';
-import { computed, ref } from 'vue';
+import { computed, ref, reactive } from 'vue';
 import { useStore } from 'vuex';
 import Navigator from '@/components/Navigator.vue';
 import { checkUserName, checkUserMail, registerUser } from '@/network/signUp';
+
+const sha256 = require('sha256');
 
 export default {
   name: 'SignUp',
@@ -110,8 +128,19 @@ export default {
     FontAwesomeIcon
   },
   setup(): unknown {
-    // 添加ICON
-    library.add(faChevronLeft, faTimes, faEyeSlash, faEye, faCheckCircle, faInfoCircle);
+    // 导航样式
+    const navigatorStyle = reactive({
+      borderBottom: 'none'
+    });
+    // 添加icon
+    library.add(
+      faChevronLeft,
+      faTimes,
+      faEyeSlash,
+      faEye,
+      faCheckCircle,
+      faInfoCircle
+    );
     // Vuex
     const store = useStore();
     // 路由
@@ -128,7 +157,9 @@ export default {
         isNewUserName.value = false;
         isShowUserNameTip.value = false;
       } else {
-        checkUserName({ userName: userName.value }).then((value: any) => {
+        checkUserName({
+          userName: sha256(userName.value)
+        }).then((value: any) => {
           isShowUserNameTip.value = true;
           isNewUserName.value = value.isNewUserName;
         });
@@ -143,7 +174,9 @@ export default {
         isNewUserMail.value = false;
         isShowUserMailTip.value = false;
       } else {
-        checkUserMail({ userMail: userMail.value }).then((value: any) => {
+        checkUserMail({
+          userMail: sha256(userMail.value)
+        }).then((value: any) => {
           isShowUserMailTip.value = true;
           isNewUserMail.value = value.isNewUserMail;
         });
@@ -174,15 +207,17 @@ export default {
       }
     }
     // 点击注册
-    const isButtonDisabled = computed(() => !(isNewUserName.value && isNewUserMail.value && isValidPassword.value));
+    const isButtonDisabled = computed(
+      () => !(isNewUserName.value && isNewUserMail.value && isValidPassword.value)
+    );
     function signUpClick() {
       if (isButtonDisabled.value) {
         console.log('hhh');
       } else {
         registerUser({
-          userName: userName.value,
-          userMail: userMail.value,
-          userPassword: userPassword.value
+          userName: sha256(userName.value),
+          userMail: sha256(userMail.value),
+          userPassword: sha256(userPassword.value)
         }).then((value: any) => {
           if (value.res) {
             store.commit('changeUserId', value.userId);
@@ -192,6 +227,7 @@ export default {
       }
     }
     return {
+      navigatorStyle,
       goBack,
       userName,
       userMail,
@@ -235,61 +271,62 @@ export default {
     margin-bottom: @rpx * 14vw;
   }
   .sign-up-container {
-      font-size: @rpx * 32vw;
-      .sign-up-input-container {
-          margin-top: @rpx * 70vw;
-        .sign-up-input {
-          width: 100%;
-          border: none;
-          outline: none;
-          border-bottom: @rpx * 1vw rgba(39,40,50,.1) solid;
-          line-height: 1.5;
-          background-color: transparent;
-        }
-        .input-control {
-          position: relative;
-          float: right;
-          margin-left: -100%;
-          z-index: 1;
-          .existencen-info {
-            color: rgba(220,20,60,1);
-          }
-          .allow-icon {
-            color: rgba(25,71,255,1);
-          }
-          .password-format-tip {
-            padding-left: @rpx * 5vw;
-            ul {
-              visibility: hidden;
-              position: absolute;
-              top: 0;
-              transform: translate(-72%, -100%);
-              width: max-content;
-              padding: @rpx * 10vw @rpx * 20vw @rpx * 40vw;
-              line-height: 1.5;
-              color: rgba(255, 255, 255, 1);
-              background: url('../../assets/img/signUp/password-format-tip.png') center center/100% 100% no-repeat;
-            }
-            &:active {
-              ul {
-                visibility: inherit;
-              }
-            }
-          }
-        }
-      }
-      .sign-up-button {
-        margin: @rpx * 120vw auto 0;
+    font-size: @rpx * 32vw;
+    .sign-up-input-container {
+      margin-top: @rpx * 70vw;
+      .sign-up-input {
+        width: 100%;
         border: none;
-        width: @rpx * 520vw;
-        line-height: @rpx * 96vw;
-        font-size: @rpx * 32vw;
-        border-radius: @rpx * 48vw;
-        text-align: center;
-        &-active {
-          background-color: rgba(255,228,49,1);
+        outline: none;
+        border-bottom: @rpx * 1vw rgba(39, 40, 50, 0.1) solid;
+        line-height: 1.5;
+        background-color: transparent;
+      }
+      .input-control {
+        position: relative;
+        float: right;
+        margin-left: -100%;
+        z-index: 1;
+        .existencen-info {
+          color: rgba(220, 20, 60, 1);
+        }
+        .allow-icon {
+          color: rgba(25, 71, 255, 1);
+        }
+        .password-format-tip {
+          padding-left: @rpx * 5vw;
+          ul {
+            visibility: hidden;
+            position: absolute;
+            top: 0;
+            transform: translate(-73%, -100%);
+            width: max-content;
+            padding: @rpx * 10vw @rpx * 20vw @rpx * 40vw;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 1);
+            background: url('../../assets/img/signUp/password-format-tip.png')
+              center center/100% 100% no-repeat;
+          }
+          &:active {
+            ul {
+              visibility: inherit;
+            }
+          }
         }
       }
     }
+    .sign-up-button {
+      margin: @rpx * 120vw auto 0;
+      border: none;
+      width: @rpx * 520vw;
+      line-height: @rpx * 96vw;
+      font-size: @rpx * 32vw;
+      border-radius: @rpx * 48vw;
+      text-align: center;
+      &-active {
+        background-color: rgba(255, 228, 49, 1);
+      }
+    }
+  }
 }
 </style>

@@ -1,7 +1,7 @@
 /*
  * @Author: Aucheo
  * @Date: 2021-09-15 19:06:09
- * @LastEditTime: 2021-09-19 18:13:30
+ * @LastEditTime: 2021-09-22 20:05:12
  * @LastEditors: Aucheo
  * @Description:
  * @FilePath: \instance-conmunication\server\index.js
@@ -30,6 +30,8 @@ app.use(session({
     maxAge: 60 * 60 * 1000 // 60分钟的定时
   }
 }));
+// 开放public文件夹
+app.use('/public', express.static('./public/'));
 // 使用路由
 app.use(router);
 // 监听端口

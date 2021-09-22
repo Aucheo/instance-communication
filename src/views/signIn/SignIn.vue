@@ -1,7 +1,7 @@
 <!--
  * @Author: Aucheo
  * @Date: 2021-09-15 17:38:28
- * @LastEditTime: 2021-09-19 18:15:54
+ * @LastEditTime: 2021-09-22 21:28:44
  * @LastEditors: Aucheo
  * @Description:
  * @FilePath: \instance-conmunication\src\views\signIn\SignIn.vue
@@ -45,7 +45,6 @@ import { useRouter } from 'vue-router';
 import Navigator from '@/components/Navigator.vue';
 import { getSignIn } from '../../network/signIn';
 import store from '@/store';
-import cookieAction from '@/common/cookie';
 
 const sha256 = require('sha256');
 
@@ -60,8 +59,8 @@ export default {
       borderBottom: 'none'
     });
     // 用户信息
-    const userName = ref('');
-    const userPassword = ref('');
+    const userName = ref('admin');
+    const userPassword = ref('admin1');
     // 路由
     const router = useRouter();
     // 前往注册页
